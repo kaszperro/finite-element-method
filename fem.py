@@ -79,7 +79,7 @@ if __name__ == '__main__':
     def function_c(x): return 0
 
 
-    def function_f(x): return 3 * np.sin(x * 10) * x
+    def function_f(x): return x
 
 
     beta = 0
