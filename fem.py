@@ -44,7 +44,7 @@ def calc_b_in_matrix(i: int, j: int) -> float:
 
 def get_u() -> Callable:
     def shift(x):
-        return u1 * x  # get_base_function(n)(x) * u1
+        return get_base_function(n)(x) * u1
 
     matrix = np.empty((n, n))
 
@@ -56,7 +56,7 @@ def get_u() -> Callable:
 
     for i in range(0, n):
         right_matrix[i] = calc_l(get_base_function(i), max(0.0, (i - 1) / n), min(1.0, (i + 1) / n)) - calc_b(
-            lambda x: u1,
+            lambda x: get_base_function_der(n)(x) * u1,
             get_base_function_der(i),
             shift,
             get_base_function(i), max(0.0, (i - 1) / n), min(1.0, (i + 1) / n)
@@ -79,7 +79,7 @@ if __name__ == '__main__':
     def function_c(x): return 0
 
 
-    def function_f(x): return 3 * np.sin(x*10) * x
+    def function_f(x): return 3 * np.sin(x * 10) * x
 
 
     beta = 0
