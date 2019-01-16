@@ -5,12 +5,12 @@ import numpy as np
 from scipy.integrate import quad
 
 
-def get_base_function(k):
-    return lambda x: max((1 - abs(x * n - k)), 0)
+def get_base_function(k: int):
+    return lambda x: max((1.0 - abs(x * n - k)), 0.0)
 
 
 def get_base_function_der(k):
-    return lambda x: 0 if x < (k - 1) / n or x > (k + 1) / n else n if x < k / n else -n
+    return lambda x: 0 if x < (k - 1) / n or x > (k + 1) / n else n * np.sign(k / n - x)
 
 
 def calc_b(u_der: Callable, v_der: Callable, u: Callable, v: Callable, start: float, end: float) -> float:
@@ -62,7 +62,7 @@ def get_u() -> Callable:
             get_base_function(i), max(0.0, (i - 1) / n), min(1.0, (i + 1) / n)
         )
 
-        part_result = np.linalg.solve(matrix, right_matrix)
+    part_result = np.linalg.solve(matrix, right_matrix)
 
     return lambda x: shift(x) + sum(
         u * get_base_function(iu)(x) for iu, u in enumerate(part_result)
@@ -70,16 +70,20 @@ def get_u() -> Callable:
 
 
 if __name__ == '__main__':
-    def function_a(x): return 0
+    def function_a(x):
+        return 0
 
 
-    def function_b(x): return 1
+    def function_b(x):
+        return 1
 
 
-    def function_c(x): return 0
+    def function_c(x):
+        return 0
 
 
-    def function_f(x): return x
+    def function_f(x):
+        return x
 
 
     beta = 0
