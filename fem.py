@@ -5,11 +5,11 @@ import numpy as np
 from scipy.integrate import quad
 
 
-def get_base_function(k: int):
+def get_base_function(k: int) -> Callable:
     return lambda x: max((1.0 - abs(x * n - k)), 0.0)
 
 
-def get_base_function_der(k):
+def get_base_function_der(k: int) -> Callable:
     return lambda x: 0 if x < (k - 1) / n or x > (k + 1) / n else n * np.sign(k / n - x)
 
 
@@ -20,7 +20,7 @@ def calc_b(u_der: Callable, v_der: Callable, u: Callable, v: Callable, start: fl
 
     def _third(x): return function_c(x) * u(x) * v(x)
 
-    return -beta * u(0) * v(0) + quad(_first, start, end)[0] + quad(_second, start, end)[0] + quad(_third, start, end)[
+    return -beta * u(0) * v(0) - quad(_first, start, end)[0] + quad(_second, start, end)[0] + quad(_third, start, end)[
         0]
 
 
@@ -29,8 +29,10 @@ def calc_l(v: Callable, start, end) -> float:
 
 
 def calc_b_in_matrix(i: int, j: int) -> float:
-    start = max(0.0, (i - 1) / n)
-    end = min(1.0, (j + 1) / n)
+    a = min(i, j)
+    b = max(i, j)
+    start = max(0.0, (a - 1) / n)
+    end = min(1.0, (b + 1) / n)
 
     return calc_b(
         get_base_function_der(i),
@@ -71,25 +73,25 @@ def get_u() -> Callable:
 
 if __name__ == '__main__':
     def function_a(x):
-        return 0
-
-
-    def function_b(x):
         return 1
 
 
+    def function_b(x):
+        return 2
+
+
     def function_c(x):
-        return 0
+        return -1
 
 
     def function_f(x):
-        return x
+        return -x ** 2 + 4 * x + 3
 
 
-    beta = 0
-    gamma = 0
-    u1 = 1 / 2
-    n = 100
+    beta = 1
+    gamma = -1
+    u1 = 0
+    n = 50
 
     u_function = get_u()
 
